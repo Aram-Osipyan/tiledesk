@@ -341,11 +341,11 @@ services:
     #     retries: 1
   
   mcp-proxy:
-    image: nginx:alpine
+    build: ./mcp-proxy
     container_name: mcp-proxy
     restart: unless-stopped
-    volumes:
-      - ./nginx-mcp.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - NR_API_KEY=${NR_API_KEY}
 
   mcp-metabase:
     build: ./metabase-mcp
