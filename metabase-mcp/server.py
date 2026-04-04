@@ -42,5 +42,22 @@ def list_databases() -> str:
     r = httpx.get(f"{METABASE_URL}/api/database", headers=headers)
     return r.text
 
+@mcp.tool()
+def run_native_query(db_id: int, sql: str) -> str:
+    """Execute a native SQL query on a specific database"""
+    r = httpx.post(
+        f"{METABASE_URL}/api/dataset",
+        headers=headers,
+        json={"database": db_id, "type": "native", "native": {"query": sql}},
+        timeout=30,
+    )
+    data = r.json()
+    rows = data.get("data", {}).get("rows", [])
+    cols = [c["name"] for c in data.get("data", {}).get("cols", [])]
+    if not rows:
+        return "No results"
+    import json
+    return json.dumps([dict(zip(cols, row)) for row in rows], ensure_ascii=False)
+
 if __name__ == "__main__":
     mcp.run(transport="streamable-http", host="0.0.0.0", port=3200)
