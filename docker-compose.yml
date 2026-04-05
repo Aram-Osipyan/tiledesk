@@ -353,7 +353,7 @@ services:
     container_name: mcp-metabase
     restart: unless-stopped
     environment:
-      # - METABASE_URL=${METABASE_URL}
+      - METABASE_URL=${METABASE_URL}
       - METABASE_API_KEY=${METABASE_API_KEY}
     
   mongo:
